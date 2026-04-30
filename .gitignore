@@ -1,0 +1,8 @@
+.DS_Store
+/_output/
+/bin/
+/.work/
+/.cache/
+*.test
+*.out
+/vendor/
