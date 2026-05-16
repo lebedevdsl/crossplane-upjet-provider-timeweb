@@ -10,6 +10,7 @@ import (
 	"github.com/lebedevdsl/crossplane-upjet-provider-timeweb/config/dns"
 	"github.com/lebedevdsl/crossplane-upjet-provider-timeweb/config/firewall"
 	"github.com/lebedevdsl/crossplane-upjet-provider-timeweb/config/k8s"
+	"github.com/lebedevdsl/crossplane-upjet-provider-timeweb/config/lb"
 	"github.com/lebedevdsl/crossplane-upjet-provider-timeweb/config/project"
 	"github.com/lebedevdsl/crossplane-upjet-provider-timeweb/config/s3"
 	"github.com/lebedevdsl/crossplane-upjet-provider-timeweb/config/server"
@@ -56,6 +57,7 @@ func resourceConfigurators() []func(*ujconfig.Provider) {
 		dns.Configure,
 		firewall.Configure,
 		k8s.Configure,
+		lb.Configure,
 		project.Configure,
 		s3.Configure,
 		server.Configure,

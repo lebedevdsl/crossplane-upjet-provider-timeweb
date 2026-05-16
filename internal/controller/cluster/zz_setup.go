@@ -19,6 +19,8 @@ import (
 	rule "github.com/lebedevdsl/crossplane-upjet-provider-timeweb/internal/controller/cluster/firewall/rule"
 	clusterk8s "github.com/lebedevdsl/crossplane-upjet-provider-timeweb/internal/controller/cluster/k8s/cluster"
 	nodegroup "github.com/lebedevdsl/crossplane-upjet-provider-timeweb/internal/controller/cluster/k8s/nodegroup"
+	loadbalancer "github.com/lebedevdsl/crossplane-upjet-provider-timeweb/internal/controller/cluster/lb/loadbalancer"
+	loadbalancerrule "github.com/lebedevdsl/crossplane-upjet-provider-timeweb/internal/controller/cluster/lb/loadbalancerrule"
 	project "github.com/lebedevdsl/crossplane-upjet-provider-timeweb/internal/controller/cluster/project/project"
 	providerconfig "github.com/lebedevdsl/crossplane-upjet-provider-timeweb/internal/controller/cluster/providerconfig"
 	bucket "github.com/lebedevdsl/crossplane-upjet-provider-timeweb/internal/controller/cluster/s3/bucket"
@@ -30,6 +32,7 @@ import (
 	sshkey "github.com/lebedevdsl/crossplane-upjet-provider-timeweb/internal/controller/cluster/ssh/sshkey"
 	drive "github.com/lebedevdsl/crossplane-upjet-provider-timeweb/internal/controller/cluster/storage/drive"
 	floatingip "github.com/lebedevdsl/crossplane-upjet-provider-timeweb/internal/controller/cluster/vpc/floatingip"
+	router "github.com/lebedevdsl/crossplane-upjet-provider-timeweb/internal/controller/cluster/vpc/router"
 	vpc "github.com/lebedevdsl/crossplane-upjet-provider-timeweb/internal/controller/cluster/vpc/vpc"
 )
 
@@ -47,6 +50,8 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 		rule.Setup,
 		clusterk8s.Setup,
 		nodegroup.Setup,
+		loadbalancer.Setup,
+		loadbalancerrule.Setup,
 		project.Setup,
 		providerconfig.Setup,
 		bucket.Setup,
@@ -58,6 +63,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 		sshkey.Setup,
 		drive.Setup,
 		floatingip.Setup,
+		router.Setup,
 		vpc.Setup,
 	} {
 		if err := setup(mgr, o); err != nil {
@@ -81,6 +87,8 @@ func SetupGated(mgr ctrl.Manager, o controller.Options) error {
 		rule.SetupGated,
 		clusterk8s.SetupGated,
 		nodegroup.SetupGated,
+		loadbalancer.SetupGated,
+		loadbalancerrule.SetupGated,
 		project.SetupGated,
 		providerconfig.SetupGated,
 		bucket.SetupGated,
@@ -92,6 +100,7 @@ func SetupGated(mgr ctrl.Manager, o controller.Options) error {
 		sshkey.SetupGated,
 		drive.SetupGated,
 		floatingip.SetupGated,
+		router.SetupGated,
 		vpc.SetupGated,
 	} {
 		if err := setup(mgr, o); err != nil {

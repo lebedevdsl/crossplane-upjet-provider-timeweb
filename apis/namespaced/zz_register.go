@@ -14,6 +14,7 @@ import (
 	v1alpha1dns "github.com/lebedevdsl/crossplane-upjet-provider-timeweb/apis/namespaced/dns/v1alpha1"
 	v1alpha1firewall "github.com/lebedevdsl/crossplane-upjet-provider-timeweb/apis/namespaced/firewall/v1alpha1"
 	v1alpha1k8s "github.com/lebedevdsl/crossplane-upjet-provider-timeweb/apis/namespaced/k8s/v1alpha1"
+	v1alpha1lb "github.com/lebedevdsl/crossplane-upjet-provider-timeweb/apis/namespaced/lb/v1alpha1"
 	v1alpha1project "github.com/lebedevdsl/crossplane-upjet-provider-timeweb/apis/namespaced/project/v1alpha1"
 	v1alpha1s3 "github.com/lebedevdsl/crossplane-upjet-provider-timeweb/apis/namespaced/s3/v1alpha1"
 	v1alpha1server "github.com/lebedevdsl/crossplane-upjet-provider-timeweb/apis/namespaced/server/v1alpha1"
@@ -31,6 +32,7 @@ func init() {
 		v1alpha1dns.SchemeBuilder.AddToScheme,
 		v1alpha1firewall.SchemeBuilder.AddToScheme,
 		v1alpha1k8s.SchemeBuilder.AddToScheme,
+		v1alpha1lb.SchemeBuilder.AddToScheme,
 		v1alpha1project.SchemeBuilder.AddToScheme,
 		v1alpha1s3.SchemeBuilder.AddToScheme,
 		v1alpha1server.SchemeBuilder.AddToScheme,

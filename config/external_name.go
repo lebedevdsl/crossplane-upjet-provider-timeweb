@@ -10,12 +10,16 @@ import (
 var ExternalNameConfigs = map[string]config.ExternalName{
 	"twc_vpc":         config.IdentifierFromProvider,
 	"twc_floating_ip": config.IdentifierFromProvider,
+	"twc_router":      config.IdentifierFromProvider,
 
 	"twc_firewall":      config.IdentifierFromProvider,
 	"twc_firewall_rule": config.IdentifierFromProvider,
 
 	"twc_k8s_cluster":    config.IdentifierFromProvider,
 	"twc_k8s_node_group": config.IdentifierFromProvider,
+
+	"twc_lb":      config.IdentifierFromProvider,
+	"twc_lb_rule": config.IdentifierFromProvider,
 
 	"twc_server":                      config.IdentifierFromProvider,
 	"twc_server_ip":                   config.IdentifierFromProvider,

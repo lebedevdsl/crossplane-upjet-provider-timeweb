@@ -35,6 +35,42 @@ spec:
 
 ---
 
+apiVersion: lb.timeweb.m.crossplane.io/v1alpha1
+kind: LoadBalancer
+metadata:
+  annotations:
+    meta.upbound.io/example-id: vpc/v1alpha1/vpc
+  labels:
+    testing.upbound.io/example-name: example-lb
+  name: example-lb
+  namespace: crossplane-system
+spec:
+  forProvider:
+    algo: roundrobin
+    healthCheck:
+    - fall: 3
+      inter: 10
+      path: /lala
+      port: 80
+      proto: http
+      rise: 2
+      timeout: 5
+    ips: []
+    isKeepalive: false
+    isSsl: false
+    isSticky: false
+    isUseProxy: false
+    localNetwork:
+    - id: ${twc_vpc.example-vpc.id}
+      ip: 192.168.0.20
+    name: example-lb
+    presetId: ${data.twc_lb_preset.example-lb-preset.id}
+    projectIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: twc_project
+
+---
+
 apiVersion: server.timeweb.m.crossplane.io/v1alpha1
 kind: Server
 metadata:

@@ -1,0 +1,49 @@
+apiVersion: lb.timeweb.crossplane.io/v1alpha1
+kind: LoadBalancer
+metadata:
+  annotations:
+    meta.upbound.io/example-id: lb/v1alpha1/loadbalancer
+  labels:
+    testing.upbound.io/example-name: example-lb
+  name: example-lb
+spec:
+  forProvider:
+    algo: roundrobin
+    healthCheck:
+    - fall: 3
+      inter: 10
+      path: /lala
+      port: 80
+      proto: http
+      rise: 2
+      timeout: 5
+    ips: []
+    isKeepalive: false
+    isSsl: false
+    isSticky: false
+    isUseProxy: false
+    name: example-lb
+    presetId: ${data.twc_lb_preset.example-lb-preset.id}
+    projectIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: twc_project
+
+---
+
+apiVersion: lb.timeweb.crossplane.io/v1alpha1
+kind: LoadBalancerRule
+metadata:
+  annotations:
+    meta.upbound.io/example-id: lb/v1alpha1/loadbalancer
+  labels:
+    testing.upbound.io/example-name: example-lb-rule
+  name: example-lb-rule
+spec:
+  forProvider:
+    balancerPort: 83
+    balancerProto: http2
+    lbIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: twc_lb
+    serverPort: 82
+    serverProto: http
