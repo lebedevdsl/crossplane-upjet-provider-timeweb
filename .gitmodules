@@ -1,0 +1,7 @@
+[submodule "build"]
+	path = build
+	url = https://github.com/crossplane/build
+[submodule "terraform-provider-timeweb-cloud"]
+	path = terraform-provider-timeweb-cloud
+	url = https://github.com/timeweb-cloud/terraform-provider-timeweb-cloud
+	branch = main

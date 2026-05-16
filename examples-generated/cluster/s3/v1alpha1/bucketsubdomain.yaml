@@ -1,0 +1,31 @@
+apiVersion: s3.timeweb.crossplane.io/v1alpha1
+kind: BucketSubdomain
+metadata:
+  annotations:
+    meta.upbound.io/example-id: s3/v1alpha1/bucketsubdomain
+  labels:
+    testing.upbound.io/example-name: example-s3-bucket-subdomain
+  name: example-s3-bucket-subdomain
+spec:
+  forProvider:
+    bucketIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: example-s3-bucket
+    releaseCert: true
+    subdomain: s3.example.com
+
+---
+
+apiVersion: s3.timeweb.crossplane.io/v1alpha1
+kind: Bucket
+metadata:
+  annotations:
+    meta.upbound.io/example-id: s3/v1alpha1/bucketsubdomain
+  labels:
+    testing.upbound.io/example-name: example-s3-bucket
+  name: example-s3-bucket
+spec:
+  forProvider:
+    name: example-s3-bucket
+    presetId: ${data.twc_s3_preset.example-s3-preset.id}
+    type: private

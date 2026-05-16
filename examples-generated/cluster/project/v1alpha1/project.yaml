@@ -1,0 +1,31 @@
+apiVersion: project.timeweb.crossplane.io/v1alpha1
+kind: Project
+metadata:
+  annotations:
+    meta.upbound.io/example-id: project/v1alpha1/project
+  labels:
+    testing.upbound.io/example-name: example-project
+  name: example-project
+spec:
+  forProvider:
+    description: Some example project
+    name: Example
+
+---
+
+apiVersion: server.timeweb.crossplane.io/v1alpha1
+kind: Server
+metadata:
+  annotations:
+    meta.upbound.io/example-id: project/v1alpha1/project
+  labels:
+    testing.upbound.io/example-name: example-project
+  name: example-project
+spec:
+  forProvider:
+    name: Example project
+    osId: ${data.twc_os.example-os.id}
+    presetId: ${data.twc_presets.example-preset.id}
+    projectIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: twc_project

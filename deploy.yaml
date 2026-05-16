@@ -1,0 +1,35 @@
+---
+apiVersion: timeweb.m.crossplane.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: default
+  namespace: timeweb
+spec:
+  credentials:
+    source: Secret
+    secretRef:
+      namespace: timeweb
+      name: timeweb-creds
+      key: credentials
+---
+apiVersion: project.timeweb.m.crossplane.io/v1alpha1
+kind: Project
+metadata:
+  name: common
+  namespace: timeweb
+  annotations:
+    # Adopt the existing Timeweb project with this numeric ID (from the
+    # Timeweb UI URL). Drop the annotation to have the provider create a new
+    # project instead.
+    crossplane.io/external-name: "22222"
+spec:
+  forProvider:
+    description: "Crossplane round-trip test"
+    name: "crossplane-smoketest"
+  providerConfigRef:
+    kind: ProviderConfig   # namespaced PC (use ClusterProviderConfig for the cluster-scoped variant)
+    name: default
+  managementPolicies:
+    - Observe
+    - Update
+    - Create

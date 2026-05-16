@@ -1,0 +1,52 @@
+apiVersion: firewall.timeweb.m.crossplane.io/v1alpha1
+kind: Firewall
+metadata:
+  annotations:
+    meta.upbound.io/example-id: firewall/v1alpha1/firewall
+  labels:
+    testing.upbound.io/example-name: example-firewall
+  name: example-firewall
+  namespace: crossplane-system
+spec:
+  forProvider:
+    description: Some example firewall
+    link:
+    - id: ${resource.twc_server.vds-with-preset.id}
+      type: server
+    - id: ${resource.twc_server.vds-with-preset-2.id}
+      type: server
+    name: example-firewall
+
+---
+
+apiVersion: server.timeweb.m.crossplane.io/v1alpha1
+kind: Server
+metadata:
+  annotations:
+    meta.upbound.io/example-id: firewall/v1alpha1/firewall
+  labels:
+    testing.upbound.io/example-name: vds-with-preset
+  name: vds-with-preset
+  namespace: crossplane-system
+spec:
+  forProvider:
+    name: Some server with preset
+    osId: ${data.twc_os.os.id}
+    presetId: ${data.twc_presets.preset.id}
+
+---
+
+apiVersion: server.timeweb.m.crossplane.io/v1alpha1
+kind: Server
+metadata:
+  annotations:
+    meta.upbound.io/example-id: firewall/v1alpha1/firewall
+  labels:
+    testing.upbound.io/example-name: vds-with-preset-2
+  name: vds-with-preset-2
+  namespace: crossplane-system
+spec:
+  forProvider:
+    name: Some server with preset 2
+    osId: ${data.twc_os.os.id}
+    presetId: ${data.twc_presets.preset.id}

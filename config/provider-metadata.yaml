@@ -1,0 +1,1816 @@
+name: timeweb-cloud/timeweb-cloud
+resources:
+    twc_database_backup Resource - Timeweb Cloud:
+        subCategory: ""
+        description: Resource for describing needed database backup and provides actual information about its status
+        name: twc_database_backup Resource - Timeweb Cloud
+        title: twc_database_backup Resource - Timeweb Cloud
+        argumentDocs:
+            cluster_id: (Number) Database cluster ID for which backup should be created
+            comment: (String) Comment for backup
+            created_at: (String) Date when backup was created
+            id: (String) The ID of this resource.
+            name: (String) Name of backup
+            size: (Number) Backups size
+            status: (String) Current status of backup
+            type: (String) Backup type (manual or auto)
+        importStatements: []
+    twc_database_backup_schedule Resource - Timeweb Cloud:
+        subCategory: ""
+        description: Resource for describing needed database auto backup properties and schedule
+        name: twc_database_backup_schedule Resource - Timeweb Cloud
+        title: twc_database_backup_schedule Resource - Timeweb Cloud
+        argumentDocs:
+            cluster_id: (Number) Database cluster ID for which database auto backups should be configured
+            copy_count: (Number) Maximum stored copy count
+            creation_start_at: (String) Creation date for first backup
+            day_of_week: (Number) Day of the week when auto backup should be created. Allowed only for week interval, counting starts from 1 (Monday)
+            enabled: (Boolean) Enable auto backups
+            id: (String) The ID of this resource.
+            interval: (String) Interval between auto backups
+        importStatements: []
+    twc_database_cluster:
+        subCategory: ""
+        description: Resource for describing needed database cluster and provides actual information about its status
+        name: twc_database_cluster
+        title: twc_database_cluster Resource - Timeweb Cloud
+        examples:
+            - name: example-mysql-8
+              manifest: |-
+                {
+                  "config_parameters": {
+                    "auto_increment_increment": 3
+                  },
+                  "name": "example_mysql_8",
+                  "preset_id": "${data.twc_database_preset.example-db-preset.id}",
+                  "type": "mysql"
+                }
+              references:
+                preset_id: data.twc_database_preset.example-db-preset.id
+        argumentDocs:
+            availability_zone: (String) Availability zone for database cluster
+            config_parameters: (Map of String) Configuration parameters for database cluster
+            description: (String) Description for project
+            disk_stats: (List of Object) Information about database disk stats (see below for nested schema)
+            hash_type: (String) Hash type for database
+            id: (String) The ID of this resource.
+            ip: (String)
+            ips: (List of Object) (see below for nested schema)
+            is_external_ip: (Boolean) Flag that shows allowability database only by external IP address
+            location: (String) Location for the server (ru-1, ru-2, de-1, kz-1, etc.)
+            name: (String) Name for database cluster
+            network: '(Block List, Max: 1) Network for database cluster (see below for nested schema)'
+            networks: (List of Object) (see below for nested schema)
+            parameters: (Map of String) Configuration parameters for database cluster
+            port: (Number) Listening port for incoming connections
+            preset_id: (Number) Preset ID for database cluster
+            project_id: (Number) Project ID for managed resource
+            replications: (Number) Number of replication instances
+            size: (Number)
+            status: (String) Current status of database cluster (started, starting, stopped, no_paid)
+            type: (String) Type of database cluster
+            used: (Number)
+        importStatements: []
+    twc_database_instance:
+        subCategory: ""
+        description: Resource for describing needed database instance and provides actual information about its status
+        name: twc_database_instance
+        title: twc_database_instance Resource - Timeweb Cloud
+        examples:
+            - name: example-mysql-8-instance
+              manifest: |-
+                {
+                  "cluster_id": "${twc_database_cluster.example-mysql-8.id}",
+                  "name": "example"
+                }
+              references:
+                cluster_id: twc_database_cluster.example-mysql-8.id
+              dependencies:
+                twc_database_cluster.example-mysql-8: |-
+                    {
+                      "name": "example_mysql_8",
+                      "preset_id": "${data.twc_database_preset.example-db-preset.id}",
+                      "type": "mysql"
+                    }
+        argumentDocs:
+            cluster_id: (Number) Database cluster ID for which backup instance be created
+            description: (String) Description for project
+            id: (String) The ID of this resource.
+            name: (String) Name for database instance
+        importStatements: []
+    twc_database_user:
+        subCategory: ""
+        description: Resource for describing needed database user and provides actual information about its status
+        name: twc_database_user
+        title: twc_database_user Resource - Timeweb Cloud
+        examples:
+            - name: example-mysql-8-user
+              manifest: |-
+                {
+                  "cluster_id": "${twc_database_cluster.example-mysql-8.id}",
+                  "login": "admin",
+                  "password": "examplepassword1",
+                  "privileges": [
+                    "SELECT",
+                    "INSERT",
+                    "UPDATE",
+                    "DELETE",
+                    "ALTER",
+                    "REFERENCES",
+                    "CREATE",
+                    "DROP",
+                    "INDEX"
+                  ]
+                }
+              references:
+                cluster_id: twc_database_cluster.example-mysql-8.id
+              dependencies:
+                twc_database_cluster.example-mysql-8: |-
+                    {
+                      "name": "example_mysql_8",
+                      "preset_id": "${data.twc_database_preset.example-db-preset.id}",
+                      "type": "mysql"
+                    }
+                twc_database_instance.example-mysql-8-instance: |-
+                    {
+                      "cluster_id": "${twc_database_cluster.example-mysql-8.id}",
+                      "name": "example"
+                    }
+                twc_database_instance.example-mysql-8-other-instance: |-
+                    {
+                      "cluster_id": "${twc_database_cluster.example-mysql-8.id}",
+                      "name": "otherexample"
+                    }
+                twc_database_instance.example-mysql-8-some-other-instance: |-
+                    {
+                      "cluster_id": "${twc_database_cluster.example-mysql-8.id}",
+                      "name": "someotherexample"
+                    }
+            - name: example-mysql-8-user
+              manifest: |-
+                {
+                  "cluster_id": "${twc_database_cluster.example-mysql-8.id}",
+                  "instance": [
+                    {
+                      "instance_id": "${twc_database_instance.example-mysql-8-instance.id}",
+                      "privileges": [
+                        "SELECT",
+                        "INSERT",
+                        "UPDATE",
+                        "DELETE"
+                      ]
+                    }
+                  ],
+                  "login": "otheruser",
+                  "password": "examplepassword1"
+                }
+              references:
+                cluster_id: twc_database_cluster.example-mysql-8.id
+                instance.instance_id: twc_database_instance.example-mysql-8-instance.id
+              dependencies:
+                twc_database_cluster.example-mysql-8: |-
+                    {
+                      "name": "example_mysql_8",
+                      "preset_id": "${data.twc_database_preset.example-db-preset.id}",
+                      "type": "mysql"
+                    }
+                twc_database_instance.example-mysql-8-instance: |-
+                    {
+                      "cluster_id": "${twc_database_cluster.example-mysql-8.id}",
+                      "name": "example"
+                    }
+                twc_database_instance.example-mysql-8-other-instance: |-
+                    {
+                      "cluster_id": "${twc_database_cluster.example-mysql-8.id}",
+                      "name": "otherexample"
+                    }
+                twc_database_instance.example-mysql-8-some-other-instance: |-
+                    {
+                      "cluster_id": "${twc_database_cluster.example-mysql-8.id}",
+                      "name": "someotherexample"
+                    }
+            - name: example-mysql-8-user
+              manifest: |-
+                {
+                  "cluster_id": "${twc_database_cluster.example-mysql-8.id}",
+                  "instance": [
+                    {
+                      "instance_id": "${twc_database_instance.example-mysql-8-instance.id}",
+                      "privileges": [
+                        "SELECT",
+                        "INSERT",
+                        "UPDATE",
+                        "DELETE"
+                      ]
+                    },
+                    {
+                      "instance_id": "${twc_database_instance.example-mysql-8-other-instance.id}",
+                      "privileges": [
+                        "SELECT",
+                        "INSERT",
+                        "UPDATE",
+                        "DELETE"
+                      ]
+                    }
+                  ],
+                  "login": "someotheruser",
+                  "password": "examplepassword1"
+                }
+              references:
+                cluster_id: twc_database_cluster.example-mysql-8.id
+                instance.instance_id: twc_database_instance.example-mysql-8-other-instance.id
+              dependencies:
+                twc_database_cluster.example-mysql-8: |-
+                    {
+                      "name": "example_mysql_8",
+                      "preset_id": "${data.twc_database_preset.example-db-preset.id}",
+                      "type": "mysql"
+                    }
+                twc_database_instance.example-mysql-8-instance: |-
+                    {
+                      "cluster_id": "${twc_database_cluster.example-mysql-8.id}",
+                      "name": "example"
+                    }
+                twc_database_instance.example-mysql-8-other-instance: |-
+                    {
+                      "cluster_id": "${twc_database_cluster.example-mysql-8.id}",
+                      "name": "otherexample"
+                    }
+                twc_database_instance.example-mysql-8-some-other-instance: |-
+                    {
+                      "cluster_id": "${twc_database_cluster.example-mysql-8.id}",
+                      "name": "someotherexample"
+                    }
+        argumentDocs:
+            cluster_id: (Number) Database cluster ID for which user be created
+            description: (String) Description for user
+            host: (String) Allowed host for login as this user
+            id: (String) The ID of this resource.
+            instance: (Block List) Privileges of user by instance (see below for nested schema)
+            instance_id: (Number) Database instance ID for which user has privileges
+            login: (String) Login for user
+            password: (String, Sensitive) Password for user
+            privileges: (List of String) Privileges of user
+        importStatements: []
+    twc_db_backup:
+        subCategory: ""
+        description: Resource for describing needed DB backup and provides actual information about its status
+        name: twc_db_backup
+        title: twc_db_backup Resource - Timeweb Cloud
+        examples:
+            - name: example-db-backup
+              manifest: |-
+                {
+                  "comment": "Example database",
+                  "source_db_id": "${twc_db_postgres.example-postgres.id}"
+                }
+              references:
+                source_db_id: twc_db_postgres.example-postgres.id
+              dependencies:
+                twc_db_postgres.example-postgres: |-
+                    {
+                      "autovacuum_analyze_scale_factor": 0.001,
+                      "bgwriter_delay": 101,
+                      "bgwriter_lru_maxpages": 102,
+                      "deadlock_timeout": 103,
+                      "gin_pending_list_limit": 104,
+                      "idle_in_transaction_session_timeout": 115,
+                      "idle_session_timeout": 106,
+                      "is_external_ip": true,
+                      "join_collapse_limit": 107,
+                      "lock_timeout": 108,
+                      "login": "example_login",
+                      "max_connections": 110,
+                      "max_prepared_transactions": 109,
+                      "name": "example_postgres",
+                      "password": "example_password",
+                      "preset_id": "${data.twc_db_preset.example-db-postgres-preset.id}",
+                      "shared_buffers": 111,
+                      "temp_buffers": 113,
+                      "wal_buffers": 112,
+                      "work_mem": 114
+                    }
+        argumentDocs:
+            comment: (String) Comment for backup
+            created_at: (String) Date when backup was created
+            id: (String) The ID of this resource.
+            name: (String) Name of backup
+            size: (Number) Backups size
+            source_db_id: (Number) DB ID for which backup should be created
+            status: (String) Current status of backup
+            type: (String) Backup type (manual or auto)
+        importStatements: []
+    twc_db_backup_schedule:
+        subCategory: ""
+        description: Resource for describing needed DB auto backup properties and schedule
+        name: twc_db_backup_schedule
+        title: twc_db_backup_schedule Resource - Timeweb Cloud
+        examples:
+            - name: example-db-backup-schedule
+              manifest: |-
+                {
+                  "copy_count": 5,
+                  "creation_start_at": "2023-02-02T00:00:00.000Z",
+                  "enabled": true,
+                  "interval": "month",
+                  "source_db_id": "${twc_db_postgres.example-postgres.id}"
+                }
+              references:
+                source_db_id: twc_db_postgres.example-postgres.id
+              dependencies:
+                twc_db_postgres.example-postgres: |-
+                    {
+                      "autovacuum_analyze_scale_factor": 0.001,
+                      "bgwriter_delay": 101,
+                      "bgwriter_lru_maxpages": 102,
+                      "deadlock_timeout": 103,
+                      "gin_pending_list_limit": 104,
+                      "idle_in_transaction_session_timeout": 115,
+                      "idle_session_timeout": 106,
+                      "is_external_ip": true,
+                      "join_collapse_limit": 107,
+                      "lock_timeout": 108,
+                      "login": "example_login",
+                      "max_connections": 110,
+                      "max_prepared_transactions": 109,
+                      "name": "example_postgres",
+                      "password": "example_password",
+                      "preset_id": "${data.twc_db_preset.example-db-postgres-preset.id}",
+                      "shared_buffers": 111,
+                      "temp_buffers": 113,
+                      "wal_buffers": 112,
+                      "work_mem": 114
+                    }
+        argumentDocs:
+            copy_count: (Number) Maximum stored copy count
+            creation_start_at: (String) Creation date for first backup
+            day_of_week: (Number) Day of the week when auto backup should be created. Allowed only for week interval, counting starts from 1 (Monday)
+            enabled: (Boolean) Enable auto backups
+            id: (String) The ID of this resource.
+            interval: (String) Interval between auto backups
+            source_db_id: (Number) DB ID for which DB auto backups should be configured
+        importStatements: []
+    twc_db_mongodb:
+        subCategory: ""
+        description: Resource for describing needed MongoDB database and provides actual information about its status
+        name: twc_db_mongodb
+        title: twc_db_mongodb Resource - Timeweb Cloud
+        examples:
+            - name: example-mongodb
+              manifest: |-
+                {
+                  "login": "example_login",
+                  "name": "example_mongodb",
+                  "password": "example_password",
+                  "preset_id": "${data.twc_db_preset.example-db-preset.id}"
+                }
+              references:
+                preset_id: data.twc_db_preset.example-db-preset.id
+        argumentDocs:
+            disk_stats: (List of Object) Information about database disk stats (see below for nested schema)
+            host: (String) Host for connection to database
+            id: (String) The ID of this resource.
+            ip: (String) IP-address database of network interface
+            is_external_ip: (Boolean) Flag that shows allowability database only by external IP address
+            local_ip: (String) Local IP-address database of network interface
+            local_network: '(Block List, Max: 1) Flag that enables local network for DB (see below for nested schema)'
+            login: (String) Login for database
+            name: (String) Name for database
+            password: (String, Sensitive) Password for database
+            port: (Number) Port for connection to database
+            preset_id: (Number) Preset ID for database
+            project_id: (Number) Project ID for created DB
+            size: (Number)
+            status: (String) Current status of database (started, starting, stoped, no_paid)
+            used: (Number)
+        importStatements:
+            - |-
+              # Database can be imported by specifying the numeric identifier from URL
+              terraform import twc_db_mongodb.example 42
+    twc_db_mysql_5:
+        subCategory: ""
+        description: Resource for describing needed MySQL 5.7 database and provides actual information about its status
+        name: twc_db_mysql_5
+        title: twc_db_mysql_5 Resource - Timeweb Cloud
+        examples:
+            - name: example-mysql-5
+              manifest: |-
+                {
+                  "login": "example_login",
+                  "name": "example_mysql_5",
+                  "password": "example_password",
+                  "preset_id": "${data.twc_db_preset.example-db-preset.id}"
+                }
+              references:
+                preset_id: data.twc_db_preset.example-db-preset.id
+        argumentDocs:
+            auto_increment_increment: (Number) Interval between indices between rows for AUTO_INCREMENT columns
+            auto_increment_offset: (Number) Start value for AUTO_INCREMENT columns
+            disk_stats: (List of Object) Information about database disk stats (see below for nested schema)
+            hash_type: (String) Hash type for database
+            host: (String) Host for connection to database
+            id: (String) The ID of this resource.
+            innodb_io_capacity: (Number) IOPS count
+            innodb_purge_threads: (Number) Threads count for cleanup operation
+            innodb_read_io_threads: (Number) Threads count for read operation
+            innodb_thread_concurrency: (Number) Maximum active threads count
+            innodb_write_io_threads: (Number) Threads count for write operation
+            ip: (String) IP-address database of network interface
+            is_external_ip: (Boolean) Flag that shows allowability database only by external IP address
+            join_buffer_size: (Number) Buffer size for JOIN operation
+            local_ip: (String) Local IP-address database of network interface
+            local_network: '(Block List, Max: 1) Flag that enables local network for DB (see below for nested schema)'
+            login: (String) Login for database
+            max_allowed_packet: (Number) Max allowed size for one packet or parameter that may be sent via mysql_stmt_send_long_data()
+            max_connections: (Number) The maximum permitted number of simultaneous client connections
+            max_heap_table_size: (Number) Max size for user MEMORY-tables
+            name: (String) Name for database
+            password: (String, Sensitive) Password for database
+            port: (Number) Port for connection to database
+            preset_id: (Number) Preset ID for database
+            project_id: (Number) Project ID for created DB
+            query_cache_size: (Number) The amount of memory allocated for caching query results
+            query_cache_type: (Number) Set the query cache type
+            size: (Number)
+            sql_mode: (Set of String) The current server SQL mode
+            status: (String) Current status of database (started, starting, stoped, no_paid)
+            used: (Number)
+        importStatements:
+            - |-
+              # Database can be imported by specifying the numeric identifier from URL
+              terraform import twc_db_mysql_5.example 42
+    twc_db_mysql_8:
+        subCategory: ""
+        description: Resource for describing needed MySQL 8 database and provides actual information about its status
+        name: twc_db_mysql_8
+        title: twc_db_mysql_8 Resource - Timeweb Cloud
+        examples:
+            - name: example-mysql-8
+              manifest: |-
+                {
+                  "login": "example_login",
+                  "name": "example_mysql_8",
+                  "password": "example_password",
+                  "preset_id": "${data.twc_db_preset.example-db-preset.id}"
+                }
+              references:
+                preset_id: data.twc_db_preset.example-db-preset.id
+        argumentDocs:
+            auto_increment_increment: (Number) Interval between indices between rows for AUTO_INCREMENT columns
+            auto_increment_offset: (Number) Start value for AUTO_INCREMENT columns
+            disk_stats: (List of Object) Information about database disk stats (see below for nested schema)
+            hash_type: (String) Hash type for database
+            host: (String) Host for connection to database
+            id: (String) The ID of this resource.
+            innodb_io_capacity: (Number) IOPS count
+            innodb_purge_threads: (Number) Threads count for cleanup operation
+            innodb_read_io_threads: (Number) Threads count for read operation
+            innodb_thread_concurrency: (Number) Maximum active threads count
+            innodb_write_io_threads: (Number) Threads count for write operation
+            ip: (String) IP-address database of network interface
+            is_external_ip: (Boolean) Flag that shows allowability database only by external IP address
+            join_buffer_size: (Number) Buffer size for JOIN operation
+            local_ip: (String) Local IP-address database of network interface
+            local_network: '(Block List, Max: 1) Flag that enables local network for DB (see below for nested schema)'
+            login: (String) Login for database
+            max_allowed_packet: (Number) Max allowed size for one packet or parameter that may be sent via mysql_stmt_send_long_data()
+            max_connections: (Number) The maximum permitted number of simultaneous client connections
+            max_heap_table_size: (Number) Max size for user MEMORY-tables
+            name: (String) Name for database
+            password: (String, Sensitive) Password for database
+            port: (Number) Port for connection to database
+            preset_id: (Number) Preset ID for database
+            project_id: (Number) Project ID for created DB
+            size: (Number)
+            sql_mode: (Set of String) The current server SQL mode
+            status: (String) Current status of database (started, starting, stoped, no_paid)
+            used: (Number)
+        importStatements:
+            - |-
+              # Database can be imported by specifying the numeric identifier from URL
+              terraform import twc_db_mysql_8.example 42
+    twc_db_postgres:
+        subCategory: ""
+        description: Resource for describing needed Postgres database and provides actual information about its status
+        name: twc_db_postgres
+        title: twc_db_postgres Resource - Timeweb Cloud
+        examples:
+            - name: example-postgres
+              manifest: |-
+                {
+                  "login": "example_login",
+                  "name": "example_postgres",
+                  "password": "example_password",
+                  "preset_id": "${data.twc_db_preset.example-db-preset.id}"
+                }
+              references:
+                preset_id: data.twc_db_preset.example-db-preset.id
+        argumentDocs:
+            autovacuum_analyze_scale_factor: (Number) Change ration before ANALYZE will be started
+            bgwriter_delay: (Number) Interval between background writes runs
+            bgwriter_lru_maxpages: (Number) Maximum pages cache count
+            deadlock_timeout: (Number) Timeout between deadlock checking
+            disk_stats: (List of Object) Information about database disk stats (see below for nested schema)
+            gin_pending_list_limit: (Number) Maximum write queue size of GIN index
+            host: (String) Host for connection to database
+            id: (String) The ID of this resource.
+            idle_in_transaction_session_timeout: (Number) Maximum idle time for opened transaction
+            idle_session_timeout: (Number) Maximum idle time for session
+            ip: (String) IP-address database of network interface
+            is_external_ip: (Boolean) Flag that shows allowability database only by external IP address
+            join_collapse_limit: (Number) Threshold of elements in FROM that will be transformed to explicit JOIN
+            local_ip: (String) Local IP-address database of network interface
+            local_network: '(Block List, Max: 1) Flag that enables local network for DB (see below for nested schema)'
+            lock_timeout: (Number) Time for obtaining lock
+            login: (String) Login for database
+            max_connections: (Number) Determines the maximum number of concurrent connections to the database server
+            max_prepared_transactions: (Number) Max count of stored prepared statements
+            name: (String) Name for database
+            password: (String, Sensitive) Password for database
+            port: (Number) Port for connection to database
+            preset_id: (Number) Preset ID for database
+            project_id: (Number) Project ID for created DB
+            shared_buffers: (Number) Sets the number of shared memory buffers used by the server
+            size: (Number)
+            status: (String) Current status of database (started, starting, stoped, no_paid)
+            temp_buffers: (Number) Sets the maximum number of temporary buffers used by each session
+            used: (Number)
+            wal_buffers: (Number) Sets the number of disk-page buffers in shared memory for WAL
+            work_mem: (Number) Sets the maximum memory to be used by each autovacuum worker process
+        importStatements:
+            - |-
+              # Database can be imported by specifying the numeric identifier from URL
+              terraform import twc_db_postgres.example 42
+    twc_db_redis:
+        subCategory: ""
+        description: Resource for describing needed Redis database and provides actual information about its status
+        name: twc_db_redis
+        title: twc_db_redis Resource - Timeweb Cloud
+        examples:
+            - name: example-redis
+              manifest: |-
+                {
+                  "login": "example_login",
+                  "name": "example_redis",
+                  "password": "example_password",
+                  "preset_id": "${data.twc_db_preset.example-db-preset.id}"
+                }
+              references:
+                preset_id: data.twc_db_preset.example-db-preset.id
+        argumentDocs:
+            disk_stats: (List of Object) Information about database disk stats (see below for nested schema)
+            host: (String) Host for connection to database
+            id: (String) The ID of this resource.
+            ip: (String) IP-address database of network interface
+            is_external_ip: (Boolean) Flag that shows allowability database only by external IP address
+            local_ip: (String) Local IP-address database of network interface
+            local_network: '(Block List, Max: 1) Flag that enables local network for DB (see below for nested schema)'
+            login: (String) Login for database
+            name: (String) Name for database
+            password: (String, Sensitive) Password for database
+            port: (Number) Port for connection to database
+            preset_id: (Number) Preset ID for database
+            project_id: (Number) Project ID for created DB
+            size: (Number)
+            status: (String) Current status of database (started, starting, stoped, no_paid)
+            used: (Number)
+        importStatements:
+            - |-
+              # Database can be imported by specifying the numeric identifier from URL
+              terraform import twc_db_redis.example 42
+    twc_dns_rr:
+        subCategory: ""
+        description: Resource for describing needed DNS RR (resource records) and provides actual information about its status
+        name: twc_dns_rr
+        title: twc_dns_rr Resource - Timeweb Cloud
+        examples:
+            - name: example-resource-record
+              manifest: |-
+                {
+                  "name": "@",
+                  "type": "AAAA",
+                  "value": "::1",
+                  "zone_id": "${data.twc_dns_zone.example-zone.id}"
+                }
+              references:
+                zone_id: data.twc_dns_zone.example-zone.id
+            - name: example-resource-record
+              manifest: |-
+                {
+                  "name": "www",
+                  "type": "CNAME",
+                  "value": "example.com",
+                  "zone_id": "${data.twc_dns_zone.example-zone.id}"
+                }
+              references:
+                zone_id: data.twc_dns_zone.example-zone.id
+            - name: example-resource-record
+              manifest: |-
+                {
+                  "name": "@",
+                  "type": "MX",
+                  "value": "10 mx.example.com",
+                  "zone_id": "${data.twc_dns_zone.example-zone.id}"
+                }
+              references:
+                zone_id: data.twc_dns_zone.example-zone.id
+        argumentDocs:
+            id: (String) The ID of this resource.
+            name: (String) Host label for the resource record relative to zone name (zone name will be appended to end via dot symbol). Special name '@' will be determined as zone root
+            type: (String) Type for resource record
+            value: (String) Value for resource record. Domain names should be without trailing dot symbol
+            zone_id: (String) Zone ID for which resource record should be created
+        importStatements: []
+    twc_firewall:
+        subCategory: ""
+        description: Resource for describing needed firewall and provides actual information about its status
+        name: twc_firewall
+        title: twc_firewall Resource - Timeweb Cloud
+        examples:
+            - name: example-firewall
+              manifest: |-
+                {
+                  "description": "Some example firewall",
+                  "link": [
+                    {
+                      "id": "${resource.twc_server.vds-with-preset.id}",
+                      "type": "server"
+                    },
+                    {
+                      "id": "${resource.twc_server.vds-with-preset-2.id}",
+                      "type": "server"
+                    }
+                  ],
+                  "name": "example-firewall"
+                }
+              references:
+                link.id: resource.twc_server.vds-with-preset-2.id
+              dependencies:
+                twc_server.vds-with-preset: |-
+                    {
+                      "name": "Some server with preset",
+                      "os_id": "${data.twc_os.os.id}",
+                      "preset_id": "${data.twc_presets.preset.id}"
+                    }
+                twc_server.vds-with-preset-2: |-
+                    {
+                      "name": "Some server with preset 2",
+                      "os_id": "${data.twc_os.os.id}",
+                      "preset_id": "${data.twc_presets.preset.id}"
+                    }
+        argumentDocs:
+            description: (String) Description for firewall
+            id: (String) The ID of this resource.
+            link: (Block Set) (see below for nested schema)
+            name: (String) Name for firewall
+            type: (String) Resource type [server, dbaas, balancer]
+        importStatements: []
+    twc_firewall_rule:
+        subCategory: ""
+        description: Resource for describing needed firewall rule and provides actual information about its status
+        name: twc_firewall_rule
+        title: twc_firewall_rule Resource - Timeweb Cloud
+        examples:
+            - name: example-firewall-rules
+              manifest: |-
+                {
+                  "cidr": "0.0.0.0/0",
+                  "description": "Some example firewall rule",
+                  "direction": "ingress",
+                  "firewall_id": "${resource.twc_firewall.example-firewall.id}",
+                  "port": 80,
+                  "protocol": "tcp"
+                }
+              references:
+                firewall_id: resource.twc_firewall.example-firewall.id
+              dependencies:
+                twc_firewall.example-firewall: |-
+                    {
+                      "description": "Some example firewall",
+                      "name": "example-firewall"
+                    }
+        argumentDocs:
+            cidr: (String) Rule CIDR
+            description: (String) Description for firewall
+            direction: (String) Rule direction
+            firewall_id: (String) ID of target firewall
+            id: (String) The ID of this resource.
+            port: (Number) Port when rule protocol is TCP or UDP
+            protocol: (String) Rule protocol
+        importStatements: []
+    twc_floating_ip:
+        subCategory: ""
+        description: Resource for describing needed floating IP and provides actual information about its status
+        name: twc_floating_ip
+        title: twc_floating_ip Resource - Timeweb Cloud
+        examples:
+            - name: example-floating-ip
+              manifest: |-
+                {
+                  "availability_zone": "spb-3",
+                  "comment": "Some floating IP"
+                }
+              dependencies:
+                twc_server.example-server: |-
+                    {
+                      "availability_zone": "spb-3",
+                      "configuration": [
+                        {
+                          "configurator_id": "${data.twc_configurator.example-configurator.id}",
+                          "cpu": 1,
+                          "disk": "${1024 * 10}",
+                          "ram": 1024
+                        }
+                      ],
+                      "name": "Example server",
+                      "os_id": "${data.twc_os.example-os.id}"
+                    }
+            - name: example-floating-ip
+              manifest: |-
+                {
+                  "availability_zone": "spb-3",
+                  "comment": "Some floating IP with DDoS Guard",
+                  "ddos_guard": true
+                }
+              dependencies:
+                twc_server.example-server: |-
+                    {
+                      "availability_zone": "spb-3",
+                      "configuration": [
+                        {
+                          "configurator_id": "${data.twc_configurator.example-configurator.id}",
+                          "cpu": 1,
+                          "disk": "${1024 * 10}",
+                          "ram": 1024
+                        }
+                      ],
+                      "name": "Example server",
+                      "os_id": "${data.twc_os.example-os.id}"
+                    }
+            - name: example-floating-ip
+              manifest: |-
+                {
+                  "availability_zone": "spb-3",
+                  "comment": "Some floating IP",
+                  "resource": [
+                    {
+                      "id": "${twc_server.example-server.id}",
+                      "type": "server"
+                    }
+                  ]
+                }
+              references:
+                resource.id: twc_server.example-server.id
+              dependencies:
+                twc_server.example-server: |-
+                    {
+                      "availability_zone": "spb-3",
+                      "configuration": [
+                        {
+                          "configurator_id": "${data.twc_configurator.example-configurator.id}",
+                          "cpu": 1,
+                          "disk": "${1024 * 10}",
+                          "ram": 1024
+                        }
+                      ],
+                      "name": "Example server",
+                      "os_id": "${data.twc_os.example-os.id}"
+                    }
+        argumentDocs:
+            availability_zone: (String) Address of specified floating IP Address
+            comment: (String) Comment of specified floating IP Address
+            ddos_guard: (Boolean) Enabled DDoS Guard for specified floating IP Address
+            id: (String) The ID of this resource.
+            ip: (String) Address of specified floating IP Address
+            ptr: (String) PTR record in DNS zone of specified floating IP Address
+            resource: '(Block List, Max: 1) Address of specified floating IP Address (see below for nested schema)'
+            type: (String) Type of resource that bind with floating IP Address (server, balancer, dbaas)
+        importStatements:
+            - |-
+              # Floating IP can be imported by specifying the identifier (from URL)
+              terraform import twc_server.example 968769c4-06ac-4b37-8e21-1fc8ff6c5a9b
+    twc_k8s_addon:
+        subCategory: ""
+        description: Resource for describing K8S cluster addon
+        name: twc_k8s_addon
+        title: twc_k8s_addon Resource - Timeweb Cloud
+        examples:
+            - name: example-capsule-addon
+              manifest: |-
+                {
+                  "cluster_id": "${twc_k8s_cluster.example-k8s-cluster.id}",
+                  "config_type": "custom",
+                  "type": "capsule",
+                  "version": "v0.7.2"
+                }
+              references:
+                cluster_id: twc_k8s_cluster.example-k8s-cluster.id
+        argumentDocs:
+            access_key: (String) Access key of the config
+            cluster_id: (Number) K8S cluster ID for which addon should be created
+            config: '(Block List, Max: 1) (see below for nested schema)'
+            config_type: (String) Config type (basic, custom)
+            endpoint: (String) Endpoint of the config
+            id: (String) ID of the addon
+            name: (String) Name of the config
+            region: (String) Region of the config
+            secret_key: (String) Secret key of the config
+            status: (String) Status of added cluster addon
+            type: (String) Type of addon (ingress, kubernetes_dashboard, csi_s3, flannel, cilium, kube-prometheus-stack, kiali, capsule, jaeger, cert-manager, istio-ingress, istiod, istio-base, traefik, fluent-operator, velero, external-dns, nvidia)
+            version: (String) Version of the config
+            yaml_config: (String) YAML configuration for addon
+        importStatements: []
+    twc_k8s_cluster:
+        subCategory: ""
+        description: Resource for describing needed K8S cluster and provides actual information about its status
+        name: twc_k8s_cluster
+        title: twc_k8s_cluster Resource - Timeweb Cloud
+        examples:
+            - name: example-k8s-cluster
+              manifest: |-
+                {
+                  "description": "some example cluster",
+                  "high_availability": false,
+                  "ingress": true,
+                  "name": "example-cluster",
+                  "network_driver": "flannel",
+                  "preset_id": "${data.twc_k8s_preset.example-k8s-preset-master.id}",
+                  "version": "v1.22.17"
+                }
+              references:
+                preset_id: data.twc_k8s_preset.example-k8s-preset-master.id
+        argumentDocs:
+            client_id: (String) Unique identifier by authentication server
+            configuration: '(Block List, Max: 1) Configuration for master nodes (see below for nested schema)'
+            configurator_id: (Number) Configurator ID for creating nodes
+            cpu: (Number) Sum of CPU count of all worker nodes
+            description: (String) Description for K8S cluster
+            disk: (Number) Sum of disks volume of worker nodes
+            from: (String) May start from this time (HH:MM format)
+            groups_claim: (String)
+            high_availability: (Boolean) High Availability for K8S cluster
+            id: (String) The ID of this resource.
+            ingress: (Boolean) Add ingress for K8S cluster
+            issuer_url: (String) OIDC Provider URL
+            kubeconfig: (String, Sensitive) K8S cluster kubeconfig
+            maintenance_slot: (Block List) Maintenance window for cluster (see below for nested schema)
+            name: (String) Name for K8S cluster
+            network_driver: (String) Network driver for K8S cluster may be retrieved from API
+            network_id: (String) ID of VPC for K8S cluster
+            oidc_provider: (Block List) OIDC provider settings for cluster (see below for nested schema)
+            preset_id: (Number) Preset ID for nodes in group
+            project_id: (Number) Project ID for K8S cluster
+            ram: (Number) Sum of RAM count of all worker nodes
+            status: (String) Current status of K8S cluster (installing, provisioning, active, unpaid, started, not_installed, failed, unpaid_not_installed, deletion)
+            to: '(String) May end to this time (HH:MM). Notice: The actual duration depends on the number of nodes in the cluster.'
+            type: (String) Maintenance slot type
+            username_claim: (String) Name of the field in the ID token that the OIDC authentication system uses as the username
+            version: (String) K8S version may be retrieved from API. If your version is outdated, we will take the latest patch of provided version! You need to check your version after cluster installation!
+        importStatements: []
+    twc_k8s_node_group:
+        subCategory: ""
+        description: Resource for describing needed node group in K8S cluster
+        name: twc_k8s_node_group
+        title: twc_k8s_node_group Resource - Timeweb Cloud
+        examples:
+            - name: example-k8s-node-group
+              manifest: |-
+                {
+                  "cluster_id": "${resource.twc_k8s_cluster.example-k8s-cluster.id}",
+                  "name": "example-k8s-node-group",
+                  "node_count": 2,
+                  "preset_id": "${data.twc_k8s_preset.example-k8s-preset-worker.id}"
+                }
+              references:
+                cluster_id: resource.twc_k8s_cluster.example-k8s-cluster.id
+                preset_id: data.twc_k8s_preset.example-k8s-preset-worker.id
+              dependencies:
+                twc_k8s_cluster.example-k8s-cluster: |-
+                    {
+                      "description": "some example cluster",
+                      "high_availability": false,
+                      "ingress": true,
+                      "name": "example-cluster",
+                      "network_driver": "flannel",
+                      "preset_id": "${data.twc_k8s_preset.example-k8s-preset-master.id}",
+                      "version": "v1.22.17"
+                    }
+        argumentDocs:
+            cluster_id: (Number) K8S cluster ID for which node group should be created
+            configuration: '(Block List, Max: 1) Configuration node group workers (see below for nested schema)'
+            configurator_id: (Number) Configurator ID for creating group node workers
+            cpu: (Number) CPU count for node group
+            disk: (Number) Disk node group size
+            effect: (String) K8S node group taint effect
+            gpu: (Number) GPU count for node group
+            id: (String) The ID of this resource.
+            is_autohealing: (Boolean) Automatic recreating failed nodes
+            is_autoscaling: (Boolean) Automatic increase/decrease of the number of nodes in a group depending on the load
+            key: (String) K8S node group label key
+            labels: (Block List) K8S node group labels (see below for nested schema)
+            max_size: (Number) max count of nodes in group
+            min_size: (Number) min count of nodes in group
+            name: (String) K8S node group name
+            node_count: (Number) Count of nodes in group
+            preset_id: (Number) Preset ID for nodes in group
+            public_ip_enabled: (Boolean) param that shows will any node has public ip
+            ram: (Number) RAM node group worker size
+            taints: (Block List) K8S node group taints (see below for nested schema)
+            value: (String) K8S node group label value
+            virtual_router_id: (String) Virtual router id that node group should use
+        importStatements: []
+    twc_lb:
+        subCategory: ""
+        description: Resource for describing needed load balancer and provides actual information about its status
+        name: twc_lb
+        title: twc_lb Resource - Timeweb Cloud
+        examples:
+            - name: example-lb
+              manifest: |-
+                {
+                  "algo": "roundrobin",
+                  "health_check": [
+                    {
+                      "fall": 3,
+                      "inter": 10,
+                      "path": "/lala",
+                      "port": 80,
+                      "proto": "http",
+                      "rise": 2,
+                      "timeout": 5
+                    }
+                  ],
+                  "ips": [],
+                  "is_keepalive": false,
+                  "is_ssl": false,
+                  "is_sticky": false,
+                  "is_use_proxy": false,
+                  "name": "example-lb",
+                  "preset_id": "${data.twc_lb_preset.example-lb-preset.id}",
+                  "project_id": "${resource.twc_project.example-project.id}"
+                }
+              references:
+                preset_id: data.twc_lb_preset.example-lb-preset.id
+                project_id: resource.twc_project.example-project.id
+              dependencies:
+                twc_lb_rule.example-lb-rule: |-
+                    {
+                      "balancer_port": 83,
+                      "balancer_proto": "http2",
+                      "lb_id": "${resource.twc_lb.example-lb.id}",
+                      "server_port": 82,
+                      "server_proto": "http"
+                    }
+        argumentDocs:
+            algo: (String) Algorithm for balancing
+            availability_zone: (String) Availability zone for load balancer
+            client_timeout: (Number) Client timeout
+            connect_timeout: (Number) Connection timeout
+            fall: (Number) Error requests count threshold for active backend health check
+            floating_ip_id: (String) Floating IP ID for server
+            health_check: '(Block List, Max: 1) (see below for nested schema)'
+            httprequest_timeout: (Number) Http request timeout
+            id: (String) The ID of this resource.
+            inter: (Number) Interval in seconds for active backend health check
+            ip: (String) IP-address balancer of network interface
+            ips: (Set of String) Backends IPs
+            is_keepalive: (Boolean) Keep alive connection from balancer to backend server
+            is_ssl: (Boolean) Automatic redirect HTTP to HTTPS
+            is_sticky: (Boolean) Save user session for balancing to same backend server
+            is_use_proxy: (Boolean) Use PROXY-protocol for communicating with backend server
+            local_ip: (String) Local IP-address balancer of network interface
+            local_network: '(Block List, Max: 1) Flag that enables local network for load balancer (see below for nested schema)'
+            maxconn: (Number) Maximum number of connections to backend server
+            name: (String) Name for balancer
+            path: (String) Path for active backend health check
+            port: (Number) TCP port for active backend health check
+            preset_id: (Number) Preset ID for balancer
+            project_id: (Number) Project ID for created balancer
+            proto: (String) Protocol for active backend health check
+            rise: (Number) Success requests count threshold for active backend health check
+            server_timeout: (Number) Server timeout
+            status: (String) Current status of balancer (started, starting, stoped, no_paid)
+            timeout: (Number) Timeout for active backend health check
+        importStatements: []
+    twc_lb_rule:
+        subCategory: ""
+        description: Resource for describing needed load balancer rule and provides actual information about its status
+        name: twc_lb_rule
+        title: twc_lb_rule Resource - Timeweb Cloud
+        examples:
+            - name: example-lb-rule
+              manifest: |-
+                {
+                  "balancer_port": 83,
+                  "balancer_proto": "http2",
+                  "lb_id": "${resource.twc_lb.example-lb.id}",
+                  "server_port": 82,
+                  "server_proto": "http"
+                }
+              references:
+                lb_id: resource.twc_lb.example-lb.id
+              dependencies:
+                twc_lb.example-lb: |-
+                    {
+                      "algo": "roundrobin",
+                      "health_check": [
+                        {
+                          "fall": 3,
+                          "inter": 10,
+                          "path": "/lala",
+                          "port": 80,
+                          "proto": "http",
+                          "rise": 2,
+                          "timeout": 5
+                        }
+                      ],
+                      "ips": [],
+                      "is_keepalive": false,
+                      "is_ssl": false,
+                      "is_sticky": false,
+                      "is_use_proxy": false,
+                      "name": "example-lb",
+                      "preset_id": "${data.twc_lb_preset.example-lb-preset.id}",
+                      "project_id": "${resource.twc_project.example-project.id}"
+                    }
+        argumentDocs:
+            balancer_port: (Number) Balancer incoming traffic TCP port
+            balancer_proto: (String) Balancer incoming traffic protocol
+            id: (String) The ID of this resource.
+            lb_id: (Number) ID of target balancer
+            server_port: (Number) Server incoming traffic TCP port
+            server_proto: (String) Server incoming traffic protocol
+        importStatements: []
+    twc_network_drive Resource - Timeweb Cloud:
+        subCategory: ""
+        description: Resource for describing needed network drive and provides actual information about its status
+        name: twc_network_drive Resource - Timeweb Cloud
+        title: twc_network_drive Resource - Timeweb Cloud
+        argumentDocs:
+            availability_zone: (String) Zone of specified network drive
+            comment: (String) Comment for the network drive
+            id: (String) The ID of this resource.
+            location: (String) Location of specified network drive
+            name: (String) Name of the network drive
+            preset_id: (Number) Preset id of the network drive
+            resource: '(Block List, Max: 1) Mount network drive to resource (see below for nested schema)'
+            size: (Number) Size of the network drive
+            status: (String) Status of the network drive
+            type: (String) Type of the network drive
+        importStatements: []
+    twc_project:
+        subCategory: ""
+        description: Resource for describing project. Learn more about projects in API documentation https://timeweb.cloud/api-docs#tag/Proekty
+        name: twc_project
+        title: twc_project Resource - Timeweb Cloud
+        examples:
+            - name: example-project
+              manifest: |-
+                {
+                  "description": "Some example project",
+                  "name": "Example"
+                }
+              dependencies:
+                twc_server.example-project: |-
+                    {
+                      "name": "Example project",
+                      "os_id": "${data.twc_os.example-os.id}",
+                      "preset_id": "${data.twc_presets.example-preset.id}",
+                      "project_id": "${resource.twc_project.example-project.id}"
+                    }
+        argumentDocs:
+            description: (String) Description for project
+            id: (String) The ID of this resource.
+            is_default: (Boolean) Logical value indicating that new resources will be created under this project
+            name: (String) Name for project
+        importStatements:
+            - |-
+              # Project can be imported by specifying the numeric identifier from URL
+              terraform import twc_project.example 42
+    twc_router Resource - Timeweb Cloud:
+        subCategory: ""
+        description: Resource for describing virtual router
+        name: twc_router Resource - Timeweb Cloud
+        title: twc_router Resource - Timeweb Cloud
+        argumentDocs:
+            availability_zone: (String) Availability zone where router located
+            comment: (String) Comment for creating router
+            create: (String)
+            delete: (String)
+            id: (String) The ID of this resource.
+            ip: (String) Param that indicates which ipv4 will be used for nat if 'nat' option presented. If you need to create one, you should create floating ip and assign it here
+            ips: (Block List) (see below for nested schema)
+            is_dhcp_enabled: (Boolean) Params that indicated will router use DHCP for this network
+            name: (String) Router name
+            nat: '(Block List, Max: 1) Param that indicates for which local-network ipv4 will be used (see below for nested schema)'
+            network_name: (String) Name of the network managed by router (exactly you should place here pvc's id)
+            networks: '(Block List, Min: 1) Param that indicates which local-networks router will manage (see below for nested schema)'
+            parent_services: '(Block List, Max: 1) Param that indicated with which resource router will be used (for example: K8S worker-nodes) (see below for nested schema)'
+            preset_id: (Number) Preset ID for router
+            project_id: (Number) Id that allow you to attach router to project
+            status: (String) Router status
+            timeouts: (Block, Optional) (see below for nested schema)
+            type: (String)
+            update: (String)
+        importStatements: []
+    twc_s3_bucket:
+        subCategory: ""
+        description: Resource for describing needed S3 bucket and provides actual information about its status
+        name: twc_s3_bucket
+        title: twc_s3_bucket Resource - Timeweb Cloud
+        examples:
+            - name: example-s3-bucket
+              manifest: |-
+                {
+                  "name": "example-s3-bucket",
+                  "preset_id": "${data.twc_s3_preset.example-s3-preset.id}",
+                  "type": "private"
+                }
+              references:
+                preset_id: data.twc_s3_preset.example-s3-preset.id
+        argumentDocs:
+            access_key: (String, Sensitive) Key for access via S3-compatible clients
+            configuration: '(Block List, Max: 1) Configuration for server (see below for nested schema)'
+            configurator_id: (Number) Configurator identifier
+            disk: (Number) Disk size for S3 Storage
+            disk_stats: (List of Object) Information about storage disk stats (see below for nested schema)
+            full_name: (String) Full name for S3 bucket (with random prefix)
+            hostname: (String) Hostname for access via S3-compatible clients
+            id: (String) The ID of this resource.
+            location: (String) Location of storage
+            name: (String) Name for S3 bucket
+            object_amount: (Number) Stored objects amount
+            preset_id: (Number) Preset ID for S3 bucket. Cannot be used with (conflicts with configuration)
+            project_id: (Number) Project ID for created S3 bucket
+            secret_key: (String, Sensitive) Secret for access via S3-compatible clients
+            size: (Number)
+            status: (String) Current status of S3 bucket (no_paid, created, transfer)
+            type: (String) Type for S3 bucket (private, public)
+            used: (Number)
+        importStatements: []
+    twc_s3_bucket_directory:
+        subCategory: ""
+        description: Resource for describing needed directory in S3 bucket. This resource support nested directories, but be carefully when parent directories are managed by other resource or managed directly from UI - this may lead to errors and requires manually removing from state
+        name: twc_s3_bucket_directory
+        title: twc_s3_bucket_directory Resource - Timeweb Cloud
+        examples:
+            - name: example-s3-bucket-directory
+              manifest: |-
+                {
+                  "bucket_id": "${twc_s3_bucket.example-s3-bucket.id}",
+                  "name": "some_directory"
+                }
+              references:
+                bucket_id: twc_s3_bucket.example-s3-bucket.id
+              dependencies:
+                twc_s3_bucket.example-s3-bucket: |-
+                    {
+                      "name": "example-s3-bucket",
+                      "preset_id": "${data.twc_s3_preset.example-s3-preset.id}",
+                      "type": "private"
+                    }
+            - name: example-s3-bucket-nested-directories
+              manifest: |-
+                {
+                  "bucket_id": "${twc_s3_bucket.example-s3-bucket.id}",
+                  "name": "some/nested/directory"
+                }
+              references:
+                bucket_id: twc_s3_bucket.example-s3-bucket.id
+              dependencies:
+                twc_s3_bucket.example-s3-bucket: |-
+                    {
+                      "name": "example-s3-bucket",
+                      "preset_id": "${data.twc_s3_preset.example-s3-preset.id}",
+                      "type": "private"
+                    }
+        argumentDocs:
+            bucket_id: (Number) S3 Bucket ID for which directory should be created
+            id: (String) The ID of this resource.
+            name: (String) Directory name
+        importStatements: []
+    twc_s3_bucket_file:
+        subCategory: ""
+        description: Resource for describing needed file in S3 bucket. This resource support nested directories, but be carefully when parent directories are managed by other resource or managed directly from UI - this may lead to errors and requires manually removing from state
+        name: twc_s3_bucket_file
+        title: twc_s3_bucket_file Resource - Timeweb Cloud
+        examples:
+            - name: example-s3-bucket-file
+              manifest: |-
+                {
+                  "bucket_id": "${twc_s3_bucket.example-s3-bucket.id}",
+                  "file": "${filebase64(\"./some_image.png\")}",
+                  "path": "some_image.png"
+                }
+              references:
+                bucket_id: twc_s3_bucket.example-s3-bucket.id
+              dependencies:
+                twc_s3_bucket.example-s3-bucket: |-
+                    {
+                      "name": "example-s3-bucket",
+                      "preset_id": "${data.twc_s3_preset.example-s3-preset.id}",
+                      "type": "private"
+                    }
+                twc_s3_bucket_directory.example-s3-bucket-directory: |-
+                    {
+                      "bucket_id": "${twc_s3_bucket.example-s3-bucket.id}",
+                      "name": "some_directory"
+                    }
+            - name: example-s3-bucket-file-in-directory
+              manifest: |-
+                {
+                  "bucket_id": "${twc_s3_bucket.example-s3-bucket.id}",
+                  "depends_on": [
+                    "${twc_s3_bucket_directory.example-s3-bucket-directory}"
+                  ],
+                  "file": "${filebase64(\"./some_image.png\")}",
+                  "path": "some_directory/some_image.png"
+                }
+              references:
+                bucket_id: twc_s3_bucket.example-s3-bucket.id
+              dependencies:
+                twc_s3_bucket.example-s3-bucket: |-
+                    {
+                      "name": "example-s3-bucket",
+                      "preset_id": "${data.twc_s3_preset.example-s3-preset.id}",
+                      "type": "private"
+                    }
+                twc_s3_bucket_directory.example-s3-bucket-directory: |-
+                    {
+                      "bucket_id": "${twc_s3_bucket.example-s3-bucket.id}",
+                      "name": "some_directory"
+                    }
+        argumentDocs:
+            bucket_id: (Number) S3 Bucket ID for which file should be created
+            file: (String) File base64-encoded content
+            id: (String) The ID of this resource.
+            path: (String) File path in S3 bucket
+        importStatements: []
+    twc_s3_bucket_subdomain:
+        subCategory: ""
+        description: Resource for add needed subdomain to S3 bucket
+        name: twc_s3_bucket_subdomain
+        title: twc_s3_bucket_subdomain Resource - Timeweb Cloud
+        examples:
+            - name: example-s3-bucket-subdomain
+              manifest: |-
+                {
+                  "bucket_id": "${twc_s3_bucket.example-s3-bucket.id}",
+                  "release_cert": true,
+                  "subdomain": "s3.example.com"
+                }
+              references:
+                bucket_id: twc_s3_bucket.example-s3-bucket.id
+              dependencies:
+                twc_s3_bucket.example-s3-bucket: |-
+                    {
+                      "name": "example-s3-bucket",
+                      "preset_id": "${data.twc_s3_preset.example-s3-preset.id}",
+                      "type": "private"
+                    }
+        argumentDocs:
+            bucket_id: (Number) S3 Bucket ID for which file should be created
+            id: (String) The ID of this resource.
+            release_cert: (Boolean) Flag that ensures releasing SSL certificate for subdomain
+            status: (String) Subdomain status (ssl_released, ssl_not_requested, ssl_re_release_error)
+            subdomain: (String) Subdomain for serving files from S3 bucket. Subdomain should be valid domain name (and unique between buckets) with CNAME record that pointing to s3.timeweb.com
+        importStatements: []
+    twc_server:
+        subCategory: ""
+        description: Resource for describing needed server and provides actual information about its status
+        name: twc_server
+        title: twc_server Resource - Timeweb Cloud
+        examples:
+            - name: example-server
+              manifest: |-
+                {
+                  "configuration": [
+                    {
+                      "configurator_id": "${data.twc_configurator.example-configurator.id}",
+                      "cpu": 1,
+                      "disk": "${1024 * 10}",
+                      "ram": 1024
+                    }
+                  ],
+                  "name": "Example server",
+                  "os_id": "${data.twc_os.example-os.id}"
+                }
+              references:
+                configuration.configurator_id: data.twc_configurator.example-configurator.id
+                os_id: data.twc_os.example-os.id
+              dependencies:
+                twc_vpc.example-vpc: |-
+                    {
+                      "description": "Some example VPC",
+                      "location": "ru-1",
+                      "name": "Example VPC",
+                      "subnet_v4": "192.168.0.0/24"
+                    }
+            - name: example-server
+              manifest: |-
+                {
+                  "configuration": [
+                    {
+                      "configurator_id": "${data.twc_configurator.example-configurator.id}",
+                      "cpu": 1,
+                      "disk": "${1024 * 10}",
+                      "ram": 1024
+                    }
+                  ],
+                  "name": "Example server with project",
+                  "os_id": "${data.twc_os.example-os.id}",
+                  "project_id": "${data.twc_projects.example-project.id}"
+                }
+              references:
+                configuration.configurator_id: data.twc_configurator.example-configurator.id
+                os_id: data.twc_os.example-os.id
+                project_id: data.twc_projects.example-project.id
+              dependencies:
+                twc_vpc.example-vpc: |-
+                    {
+                      "description": "Some example VPC",
+                      "location": "ru-1",
+                      "name": "Example VPC",
+                      "subnet_v4": "192.168.0.0/24"
+                    }
+            - name: cloned-server-example
+              manifest: |-
+                {
+                  "configuration": [
+                    {
+                      "configurator_id": "${data.twc_configurator.example-configurator.id}",
+                      "cpu": 1,
+                      "disk": "${1024 * 5 * 4}",
+                      "ram": 1024
+                    }
+                  ],
+                  "name": "Example of cloned server",
+                  "source_server_id": "${twc_server.example-server.id}"
+                }
+              references:
+                configuration.configurator_id: data.twc_configurator.example-configurator.id
+                source_server_id: twc_server.example-server.id
+              dependencies:
+                twc_vpc.example-vpc: |-
+                    {
+                      "description": "Some example VPC",
+                      "location": "ru-1",
+                      "name": "Example VPC",
+                      "subnet_v4": "192.168.0.0/24"
+                    }
+            - name: example-server-with-preset
+              manifest: |-
+                {
+                  "name": "Example server with preset",
+                  "os_id": "${data.twc_os.example-os.id}",
+                  "preset_id": "${data.twc_presets.example-preset.id}"
+                }
+              references:
+                os_id: data.twc_os.example-os.id
+                preset_id: data.twc_presets.example-preset.id
+              dependencies:
+                twc_vpc.example-vpc: |-
+                    {
+                      "description": "Some example VPC",
+                      "location": "ru-1",
+                      "name": "Example VPC",
+                      "subnet_v4": "192.168.0.0/24"
+                    }
+            - name: server-with-software
+              manifest: |-
+                {
+                  "name": "Example server with software",
+                  "os_id": "${data.twc_software.example-software.os[0].id}",
+                  "preset_id": "${data.twc_presets.example-preset.id}",
+                  "software_id": "${data.twc_software.example-software.id}"
+                }
+              references:
+                os_id: data.twc_software.example-software.os[0].id
+                preset_id: data.twc_presets.example-preset.id
+                software_id: data.twc_software.example-software.id
+              dependencies:
+                twc_vpc.example-vpc: |-
+                    {
+                      "description": "Some example VPC",
+                      "location": "ru-1",
+                      "name": "Example VPC",
+                      "subnet_v4": "192.168.0.0/24"
+                    }
+            - name: example-server-with-local-network
+              manifest: |-
+                {
+                  "local_network": [
+                    {
+                      "id": "${twc_vpc.example-vpc.id}"
+                    }
+                  ],
+                  "name": "Example server with local network",
+                  "os_id": "${data.twc_os.example-os.id}",
+                  "preset_id": "${data.twc_presets.example-preset.id}"
+                }
+              references:
+                local_network.id: twc_vpc.example-vpc.id
+                os_id: data.twc_os.example-os.id
+                preset_id: data.twc_presets.example-preset.id
+              dependencies:
+                twc_vpc.example-vpc: |-
+                    {
+                      "description": "Some example VPC",
+                      "location": "ru-1",
+                      "name": "Example VPC",
+                      "subnet_v4": "192.168.0.0/24"
+                    }
+            - name: example-server-with-local-network-and-address
+              manifest: |-
+                {
+                  "local_network": [
+                    {
+                      "id": "${twc_vpc.example-vpc.id}",
+                      "ip": "192.168.0.15"
+                    }
+                  ],
+                  "name": "Example server with local network and address",
+                  "os_id": "${data.twc_os.example-os.id}",
+                  "preset_id": "${data.twc_presets.example-preset.id}"
+                }
+              references:
+                local_network.id: twc_vpc.example-vpc.id
+                os_id: data.twc_os.example-os.id
+                preset_id: data.twc_presets.example-preset.id
+              dependencies:
+                twc_vpc.example-vpc: |-
+                    {
+                      "description": "Some example VPC",
+                      "location": "ru-1",
+                      "name": "Example VPC",
+                      "subnet_v4": "192.168.0.0/24"
+                    }
+        argumentDocs:
+            availability_zone: (String) Availability zone for server (spb-1, spb-3, 'spb-4', msk-1, nsk-1, 'ams-1', 'fra-1', 'ala-1')
+            avatar_id: (String) Identifier of avatar
+            bandwidth: (Number) Bandwidth for server
+            boot_mode: (String) Boot mode of server (std, single, cd)
+            cloud_init: (String) Cloud-init script. If script requires external network you should use floating_ip_id field instead of twc_floating_ip.resource
+            comment: (String) Comment for server
+            configuration: '(Block List, Max: 1) Configuration for server (see below for nested schema)'
+            configurator_id: (Number) Configurator identifier
+            cpu: (Number) Current CPUs count of server
+            cpu_frequency: (String) Current CPU frequency of server
+            disk: (Number) Disk size for created server
+            disks: (List of Object) Current server disks representation (see below for nested schema)
+            floating_ip_id: (String) Floating IP ID for server
+            gpu: (Number) GPU count for created server
+            hostname: (String) Hostname of the server
+            id: (String) The ID of this resource.
+            image_id: (String) Image ID for servers (not supported for cloned servers)
+            ip: (String) Address in VPC subnetwork for manual assign
+            ips: (List of Object) (see below for nested schema)
+            is_ddos_guard: (Boolean) Flag that shows status of DDoS guard service
+            is_main: (Boolean)
+            is_mounted: (Boolean)
+            is_root_password_required: (Boolean) Is root password required for server
+            is_system: (Boolean)
+            local_network: '(Block List, Max: 1) Flag that enables local network for created server (not supported for cloned servers) (see below for nested schema)'
+            location: (String) Location for the server (ru-1, ru-2, 'ru-3', de-1, kz-1, 'nl-1')
+            main_ipv4: (String) Main IPv4 address from public interface
+            mode: (String) NAT mode for created servers (dnat_and_snat - egress and ingress traffic allowed, snat - only egress traffic allowed, no_nat - only local network traffic allowed)
+            name: (String) Name for server
+            nat_mode: (String)
+            networks: (List of Object) (see below for nested schema)
+            os: (List of Object) Information about specified OS (see below for nested schema)
+            os_id: (Number) OS ID for server (not supported for cloned servers)
+            preset_id: (Number) Preset ID for server (conflicts with configuration)
+            project_id: (Number) Project ID for created server
+            ptr: (String)
+            ram: (Number) Current RAM size of server
+            root_pass: (String, Sensitive) Root password for server
+            size: (Number)
+            software: (List of Object) Information about specified software (if software_id was set) (see below for nested schema)
+            software_id: (Number) Software ID for server (not supported for cloned servers)
+            source_server_id: (Number) Server ID for which clone should be created
+            ssh_keys_ids: (Set of Number) List of SSH keys IDs for server
+            start_at: (String) Last boot time (in ISO8601 format)
+            status: (String) Current status of server (installing, software_install, reinstalling, on, off, turning_on, turning_off, hard_turning_off, rebooting, hard_rebooting, removing, removed, cloning, transfer, blocked, configuring, no_paid, permanent_blocked)
+            system_name: (String)
+            type: (String)
+            used: (Number)
+            version: (String)
+            vnc_pass: (String, Sensitive) VNC password for server
+        importStatements:
+            - |-
+              # Server can be imported by specifying the numeric identifier (from URL)
+              terraform import twc_server.example 42
+    twc_server_disk:
+        subCategory: ""
+        description: Resource for describing needed additional disk for server and provides actual information about its status
+        name: twc_server_disk
+        title: twc_server_disk Resource - Timeweb Cloud
+        examples:
+            - name: example
+              manifest: |-
+                {
+                  "size": "${1024 * 10}",
+                  "source_server_id": "${twc_server.example-server.id}"
+                }
+              references:
+                source_server_id: twc_server.example-server.id
+              dependencies:
+                twc_server.example-server: |-
+                    {
+                      "name": "Example server with preset",
+                      "os_id": "${data.twc_os.example-os.id}",
+                      "preset_id": "${data.twc_presets.example-preset.id}"
+                    }
+        argumentDocs:
+            id: (String) The ID of this resource.
+            is_mounted: (Boolean) Flag that shows current mount status of disk
+            is_system: (Boolean) Flag that shows disk is system or not (always false for now)
+            size: (Number) Disk size for created disk in MB, minimal size is 5120, step is 5120
+            source_server_id: (Number) Server ID for which disk should be created
+            status: (String) Current status of disk
+            system_name: (String) The name of the disk it was mounted on
+            type: (String) Disk type (ssd, nvme, hdd)
+            used: (Number) Used disk space in MB
+        importStatements:
+            - |-
+              # Server disk can be imported by specifying the numeric identifier in format SERVER-ID/SERVER-DISK-ID (all parameters from URL)
+              terraform import twc_server_disk.example 42/13
+    twc_server_disk_backup:
+        subCategory: ""
+        description: Resource for describing needed disk backup and provides actual information about its status
+        name: twc_server_disk_backup
+        title: twc_server_disk_backup Resource - Timeweb Cloud
+        examples:
+            - name: example
+              manifest: |-
+                {
+                  "comment": "example with main disk",
+                  "source_server_disk_id": "${twc_server.example-server.disks[0].id}",
+                  "source_server_id": "${twc_server.example-server.id}"
+                }
+              references:
+                source_server_disk_id: twc_server.example-server.disks[0].id
+                source_server_id: twc_server.example-server.id
+              dependencies:
+                twc_server.example-server: |-
+                    {
+                      "name": "Example server with preset",
+                      "os_id": "${data.twc_os.example-os.id}",
+                      "preset_id": "${data.twc_presets.example-preset.id}"
+                    }
+                twc_server_disk.example-additional-disk: |-
+                    {
+                      "size": "${1024 * 10}",
+                      "source_server_id": "${twc_server.example-server.id}"
+                    }
+            - name: example-with-additional-disk
+              manifest: |-
+                {
+                  "comment": "example with additional disk",
+                  "source_server_disk_id": "${twc_server_disk.example-additional-disk.id}",
+                  "source_server_id": "${twc_server_disk.example-disk.source_server_id}"
+                }
+              references:
+                source_server_disk_id: twc_server_disk.example-additional-disk.id
+                source_server_id: twc_server_disk.example-disk.source_server_id
+              dependencies:
+                twc_server.example-server: |-
+                    {
+                      "name": "Example server with preset",
+                      "os_id": "${data.twc_os.example-os.id}",
+                      "preset_id": "${data.twc_presets.example-preset.id}"
+                    }
+                twc_server_disk.example-additional-disk: |-
+                    {
+                      "size": "${1024 * 10}",
+                      "source_server_id": "${twc_server.example-server.id}"
+                    }
+        argumentDocs:
+            comment: (String) Comment for backup
+            created_at: (String) Date when backup was created
+            id: (String) The ID of this resource.
+            name: (String) Name of backup
+            size: (Number) Backups size
+            source_server_disk_id: (Number) Disk ID for which backup should be created
+            source_server_id: (Number) Server ID for which disk backups should be created
+            status: (String) Current status of backup
+            type: (String) Backup type (always manual for now)
+        importStatements:
+            - |-
+              # Server disk backup can be imported by specifying the numeric identifier in format SERVER-ID/SERVER-DISK-ID/SERVER-DISK-BACKUP-ID (all parameters from URL)
+              terraform import twc_server_disk_backup.example 42/13/5
+    twc_server_disk_backup_schedule:
+        subCategory: ""
+        description: Resource for describing needed disk auto backup properties and schedule
+        name: twc_server_disk_backup_schedule
+        title: twc_server_disk_backup_schedule Resource - Timeweb Cloud
+        examples:
+            - name: main-disk-example
+              manifest: |-
+                {
+                  "copy_count": 10,
+                  "creation_start_at": "2023-02-02T00:00:00.000Z",
+                  "interval": "month",
+                  "source_server_disk_id": "${twc_server.example-server.disks[0].id}",
+                  "source_server_id": "${twc_server.example-server.id}"
+                }
+              references:
+                source_server_disk_id: twc_server.example-server.disks[0].id
+                source_server_id: twc_server.example-server.id
+              dependencies:
+                twc_server.example-server: |-
+                    {
+                      "name": "Example server with preset",
+                      "os_id": "${data.twc_os.example-os.id}",
+                      "preset_id": "${data.twc_presets.example-preset.id}"
+                    }
+                twc_server_disk.example-additional-disk: |-
+                    {
+                      "size": "${1024 * 10}",
+                      "source_server_id": "${twc_server.example-server.id}"
+                    }
+            - name: additional-disk-example
+              manifest: |-
+                {
+                  "copy_count": 10,
+                  "creation_start_at": "2023-02-02T00:00:00.000Z",
+                  "interval": "month",
+                  "source_server_disk_id": "${twc_server_disk.example-additional-disk.id}",
+                  "source_server_id": "${twc_server.example-server.id}"
+                }
+              references:
+                source_server_disk_id: twc_server_disk.example-additional-disk.id
+                source_server_id: twc_server.example-server.id
+              dependencies:
+                twc_server.example-server: |-
+                    {
+                      "name": "Example server with preset",
+                      "os_id": "${data.twc_os.example-os.id}",
+                      "preset_id": "${data.twc_presets.example-preset.id}"
+                    }
+                twc_server_disk.example-additional-disk: |-
+                    {
+                      "size": "${1024 * 10}",
+                      "source_server_id": "${twc_server.example-server.id}"
+                    }
+        argumentDocs:
+            copy_count: (Number) Maximum stored copy count
+            creation_start_at: (String) Creation date for first backup
+            day_of_week: (Number) Day of the week when auto backup should be created. Allowed only for week interval, counting starts from 1 (Monday)
+            enabled: (Boolean) Enable auto backups
+            id: (String) The ID of this resource.
+            interval: (String) Interval between auto backups
+            source_server_disk_id: (Number) Disk ID for which backup should be configured
+            source_server_id: (Number) Server ID for which disk auto backups should be configured
+        importStatements: []
+    twc_server_ip:
+        subCategory: ""
+        description: Resource for describing needed additional IP address for server and provides actual information about its status
+        name: twc_server_ip
+        title: twc_server_ip Resource - Timeweb Cloud
+        examples:
+            - name: example
+              manifest: |-
+                {
+                  "ptr": "example.com",
+                  "source_server_id": "${twc_server.example-server.id}",
+                  "type": "ipv4"
+                }
+              references:
+                source_server_id: twc_server.example-server.id
+              dependencies:
+                twc_server.example-server: |-
+                    {
+                      "name": "Example server with preset",
+                      "os_id": "${data.twc_os.example-os.id}",
+                      "preset_id": "${data.twc_presets.example-preset.id}"
+                    }
+        argumentDocs:
+            id: (String) The ID of this resource.
+            ip: (String) Address of created IP
+            is_main: (Boolean) Flag that shows IP is main or not (always false for now)
+            ptr: (String) PTR for created IP. Must be valid domain name without trailing dot
+            source_server_id: (Number) Server ID for which IP should be created
+            type: (String) Type for created IP (ipv4, ipv6)
+        importStatements:
+            - |-
+              # Server IP can be imported by specifying the numeric identifier in format SERVER-ID/SERVER-IP (SERVER-ID from URL)
+              terraform import twc_server_disk_backup.example 42/1.1.1.1
+    twc_ssh_key:
+        subCategory: ""
+        description: Resource for describing needed SSH key for servers and provides actual information about its status. Learn more about SSH key in documentation https://timeweb.cloud/docs/cloud-servers/manage-servers/ssh-keys
+        name: twc_ssh_key
+        title: twc_ssh_key Resource - Timeweb Cloud
+        examples:
+            - name: example-key
+              manifest: |-
+                {
+                  "body": "${file(\"~/.ssh/some-key.pub\")}",
+                  "name": "Example"
+                }
+              dependencies:
+                twc_server.example-server: |-
+                    {
+                      "name": "Example server",
+                      "os_id": "${data.twc_os.example-os.id}",
+                      "preset_id": "${data.twc_presets.example-preset.id}",
+                      "ssh_keys_ids": [
+                        "${twc_ssh_key.example-key.id}"
+                      ]
+                    }
+        argumentDocs:
+            body: (String) Public part of SSH key
+            created_at: (String)
+            id: (String) The ID of this resource.
+            is_default: (Boolean) Flag that make SSH key default for all future created servers
+            name: (String) Name for SSH key
+            used_by: (List of Object) Servers that use this SSH key (see below for nested schema)
+        importStatements:
+            - |-
+              # SSH key can be imported by specifying the numeric identifier from URL
+              terraform import twc_ssh_key.example 42
+    twc_vpc:
+        subCategory: ""
+        description: Resource for describing needed VPN and provides actual information about its status
+        name: twc_vpc
+        title: twc_vpc Resource - Timeweb Cloud
+        examples:
+            - name: example-vpc
+              manifest: |-
+                {
+                  "description": "Some example VPC",
+                  "location": "ru-1",
+                  "name": "Example VPC",
+                  "subnet_v4": "192.168.0.0/24"
+                }
+              dependencies:
+                twc_database_cluster.example-redis-7: |-
+                    {
+                      "name": "example_redis7",
+                      "network": [
+                        {
+                          "id": "${twc_vpc.example-vpc.id}"
+                        }
+                      ],
+                      "preset_id": "${data.twc_database_preset.example-db-preset-redis-7.id}",
+                      "type": "redis7"
+                    }
+                twc_lb.example-lb: |-
+                    {
+                      "algo": "roundrobin",
+                      "health_check": [
+                        {
+                          "fall": 3,
+                          "inter": 10,
+                          "path": "/lala",
+                          "port": 80,
+                          "proto": "http",
+                          "rise": 2,
+                          "timeout": 5
+                        }
+                      ],
+                      "ips": [],
+                      "is_keepalive": false,
+                      "is_ssl": false,
+                      "is_sticky": false,
+                      "is_use_proxy": false,
+                      "local_network": [
+                        {
+                          "id": "${twc_vpc.example-vpc.id}",
+                          "ip": "192.168.0.20"
+                        }
+                      ],
+                      "name": "example-lb",
+                      "preset_id": "${data.twc_lb_preset.example-lb-preset.id}",
+                      "project_id": "${resource.twc_project.example-project.id}"
+                    }
+                twc_server.example-server-with-local-network: |-
+                    {
+                      "local_network": [
+                        {
+                          "id": "${twc_vpc.example-vpc.id}"
+                        }
+                      ],
+                      "name": "Example server with local network",
+                      "os_id": "${data.twc_os.example-os.id}",
+                      "preset_id": "${data.twc_presets.example-preset.id}"
+                    }
+                twc_server.example-server-with-local-network-and-address: |-
+                    {
+                      "local_network": [
+                        {
+                          "id": "${twc_vpc.example-vpc.id}",
+                          "ip": "192.168.0.15"
+                        }
+                      ],
+                      "name": "Example server with local network and address",
+                      "os_id": "${data.twc_os.example-os.id}",
+                      "preset_id": "${data.twc_presets.example-preset.id}"
+                    }
+        argumentDocs:
+            description: (String) Description for VPC
+            id: (String) The ID of this resource.
+            location: (String) Location for VPC
+            name: (String) Name for VPC
+            subnet_v4: (String) Subnet for VPC in CIDR notation
+        importStatements: []

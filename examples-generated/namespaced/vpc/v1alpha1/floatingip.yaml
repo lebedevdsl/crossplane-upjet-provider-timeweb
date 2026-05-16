@@ -1,0 +1,35 @@
+apiVersion: vpc.timeweb.m.crossplane.io/v1alpha1
+kind: FloatingIP
+metadata:
+  annotations:
+    meta.upbound.io/example-id: vpc/v1alpha1/floatingip
+  labels:
+    testing.upbound.io/example-name: example-floating-ip
+  name: example-floating-ip
+  namespace: crossplane-system
+spec:
+  forProvider:
+    availabilityZone: spb-3
+    comment: Some floating IP
+
+---
+
+apiVersion: server.timeweb.m.crossplane.io/v1alpha1
+kind: Server
+metadata:
+  annotations:
+    meta.upbound.io/example-id: vpc/v1alpha1/floatingip
+  labels:
+    testing.upbound.io/example-name: example-server
+  name: example-server
+  namespace: crossplane-system
+spec:
+  forProvider:
+    availabilityZone: spb-3
+    configuration:
+    - configuratorId: ${data.twc_configurator.example-configurator.id}
+      cpu: 1
+      disk: ${1024 * 10}
+      ram: 1024
+    name: Example server
+    osId: ${data.twc_os.example-os.id}

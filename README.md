@@ -2,23 +2,23 @@
 
 Crossplane provider for [Timeweb Cloud](https://timeweb.cloud).
 
-Status: **planning** — see [`docs/PLAN.md`](docs/PLAN.md). No code yet.
+Status: **MVP** — 21 managed resources generated and verified against a live
+Timeweb account.
 
 ## Approach
 
 Generated with [Upjet](https://github.com/crossplane/upjet) from the official
 [`timeweb-cloud/terraform-provider-timeweb-cloud`](https://github.com/timeweb-cloud/terraform-provider-timeweb-cloud)
-(currently v1.6.15). Native (non-Upjet) managed resources will be added later
-for API surfaces the Terraform provider doesn't expose, generated from the
-vendored OpenAPI spec at [`docs/openapi-timeweb.json`](docs/openapi-timeweb.json).
+(currently v1.6.16). Native (non-Upjet) managed resources will be added later
+for API surfaces the Terraform provider doesn't expose.
+
+## References
+
+- Timeweb Cloud REST API docs: <https://timeweb.cloud/api-docs>
+- Timeweb Terraform provider: <https://github.com/timeweb-cloud/terraform-provider-timeweb-cloud>
 
 ## Why this exists
 
-Drives the InYan platform migration to Timeweb Cloud — see
-[`../timeweb/docs/initial-proposal.md`](../timeweb/docs/initial-proposal.md).
-Crossplane replaces the Terraform layer described there with Kubernetes-native
-managed resources reconciled by ArgoCD.
-
-## Repo layout
-
-See `docs/PLAN.md` §2.
+Built to drive a Kubernetes-based migration to Timeweb Cloud, replacing
+Terraform with declarative managed resources reconciled by Crossplane (and
+typically ArgoCD on top).

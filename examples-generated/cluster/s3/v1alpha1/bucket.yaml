@@ -1,0 +1,13 @@
+apiVersion: s3.timeweb.crossplane.io/v1alpha1
+kind: Bucket
+metadata:
+  annotations:
+    meta.upbound.io/example-id: s3/v1alpha1/bucket
+  labels:
+    testing.upbound.io/example-name: example-s3-bucket
+  name: example-s3-bucket
+spec:
+  forProvider:
+    name: example-s3-bucket
+    presetId: ${data.twc_s3_preset.example-s3-preset.id}
+    type: private

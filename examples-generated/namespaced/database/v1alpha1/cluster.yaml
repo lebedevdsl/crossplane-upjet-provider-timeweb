@@ -1,0 +1,16 @@
+apiVersion: database.timeweb.m.crossplane.io/v1alpha1
+kind: Cluster
+metadata:
+  annotations:
+    meta.upbound.io/example-id: database/v1alpha1/cluster
+  labels:
+    testing.upbound.io/example-name: example-mysql-8
+  name: example-mysql-8
+  namespace: crossplane-system
+spec:
+  forProvider:
+    configParameters:
+      auto_increment_increment: 3
+    name: example_mysql_8
+    presetId: ${data.twc_database_preset.example-db-preset.id}
+    type: mysql

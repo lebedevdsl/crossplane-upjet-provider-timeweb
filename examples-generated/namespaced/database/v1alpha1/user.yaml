@@ -1,0 +1,99 @@
+apiVersion: database.timeweb.m.crossplane.io/v1alpha1
+kind: User
+metadata:
+  annotations:
+    meta.upbound.io/example-id: database/v1alpha1/user
+  labels:
+    testing.upbound.io/example-name: example-mysql-8-user
+  name: example-mysql-8-user
+  namespace: crossplane-system
+spec:
+  forProvider:
+    clusterIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: example-mysql-8
+    login: admin
+    passwordSecretRef:
+      key: example-key
+      name: example-secret
+    privileges:
+    - SELECT
+    - INSERT
+    - UPDATE
+    - DELETE
+    - ALTER
+    - REFERENCES
+    - CREATE
+    - DROP
+    - INDEX
+
+---
+
+apiVersion: database.timeweb.m.crossplane.io/v1alpha1
+kind: Cluster
+metadata:
+  annotations:
+    meta.upbound.io/example-id: database/v1alpha1/user
+  labels:
+    testing.upbound.io/example-name: example-mysql-8
+  name: example-mysql-8
+  namespace: crossplane-system
+spec:
+  forProvider:
+    name: example_mysql_8
+    presetId: ${data.twc_database_preset.example-db-preset.id}
+    type: mysql
+
+---
+
+apiVersion: database.timeweb.m.crossplane.io/v1alpha1
+kind: Instance
+metadata:
+  annotations:
+    meta.upbound.io/example-id: database/v1alpha1/user
+  labels:
+    testing.upbound.io/example-name: example-mysql-8-instance
+  name: example-mysql-8-instance
+  namespace: crossplane-system
+spec:
+  forProvider:
+    clusterIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: example-mysql-8
+    name: example
+
+---
+
+apiVersion: database.timeweb.m.crossplane.io/v1alpha1
+kind: Instance
+metadata:
+  annotations:
+    meta.upbound.io/example-id: database/v1alpha1/user
+  labels:
+    testing.upbound.io/example-name: example-mysql-8-other-instance
+  name: example-mysql-8-other-instance
+  namespace: crossplane-system
+spec:
+  forProvider:
+    clusterIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: example-mysql-8
+    name: otherexample
+
+---
+
+apiVersion: database.timeweb.m.crossplane.io/v1alpha1
+kind: Instance
+metadata:
+  annotations:
+    meta.upbound.io/example-id: database/v1alpha1/user
+  labels:
+    testing.upbound.io/example-name: example-mysql-8-some-other-instance
+  name: example-mysql-8-some-other-instance
+  namespace: crossplane-system
+spec:
+  forProvider:
+    clusterIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: example-mysql-8
+    name: someotherexample

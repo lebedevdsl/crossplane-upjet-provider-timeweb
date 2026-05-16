@@ -1,0 +1,73 @@
+apiVersion: vpc.timeweb.m.crossplane.io/v1alpha1
+kind: VPC
+metadata:
+  annotations:
+    meta.upbound.io/example-id: vpc/v1alpha1/vpc
+  labels:
+    testing.upbound.io/example-name: example-vpc
+  name: example-vpc
+  namespace: crossplane-system
+spec:
+  forProvider:
+    description: Some example VPC
+    location: ru-1
+    name: Example VPC
+    subnetV4: 192.168.0.0/24
+
+---
+
+apiVersion: database.timeweb.m.crossplane.io/v1alpha1
+kind: Cluster
+metadata:
+  annotations:
+    meta.upbound.io/example-id: vpc/v1alpha1/vpc
+  labels:
+    testing.upbound.io/example-name: example-redis-7
+  name: example-redis-7
+  namespace: crossplane-system
+spec:
+  forProvider:
+    name: example_redis7
+    network:
+    - id: ${twc_vpc.example-vpc.id}
+    presetId: ${data.twc_database_preset.example-db-preset-redis-7.id}
+    type: redis7
+
+---
+
+apiVersion: server.timeweb.m.crossplane.io/v1alpha1
+kind: Server
+metadata:
+  annotations:
+    meta.upbound.io/example-id: vpc/v1alpha1/vpc
+  labels:
+    testing.upbound.io/example-name: example-server-with-local-network
+  name: example-server-with-local-network
+  namespace: crossplane-system
+spec:
+  forProvider:
+    localNetwork:
+    - id: ${twc_vpc.example-vpc.id}
+    name: Example server with local network
+    osId: ${data.twc_os.example-os.id}
+    presetId: ${data.twc_presets.example-preset.id}
+
+---
+
+apiVersion: server.timeweb.m.crossplane.io/v1alpha1
+kind: Server
+metadata:
+  annotations:
+    meta.upbound.io/example-id: vpc/v1alpha1/vpc
+  labels:
+    testing.upbound.io/example-name: example-server-with-local-network-and-address
+  name: example-server-with-local-network-and-address
+  namespace: crossplane-system
+spec:
+  forProvider:
+    localNetwork:
+    - id: ${twc_vpc.example-vpc.id}
+      ip: 192.168.0.15
+    name: Example server with local network and address
+    osId: ${data.twc_os.example-os.id}
+    presetId: ${data.twc_presets.example-preset.id}

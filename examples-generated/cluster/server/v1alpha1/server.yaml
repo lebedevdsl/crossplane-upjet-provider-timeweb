@@ -1,0 +1,34 @@
+apiVersion: server.timeweb.crossplane.io/v1alpha1
+kind: Server
+metadata:
+  annotations:
+    meta.upbound.io/example-id: server/v1alpha1/server
+  labels:
+    testing.upbound.io/example-name: example-server
+  name: example-server
+spec:
+  forProvider:
+    configuration:
+    - configuratorId: ${data.twc_configurator.example-configurator.id}
+      cpu: 1
+      disk: ${1024 * 10}
+      ram: 1024
+    name: Example server
+    osId: ${data.twc_os.example-os.id}
+
+---
+
+apiVersion: vpc.timeweb.crossplane.io/v1alpha1
+kind: VPC
+metadata:
+  annotations:
+    meta.upbound.io/example-id: server/v1alpha1/server
+  labels:
+    testing.upbound.io/example-name: example-vpc
+  name: example-vpc
+spec:
+  forProvider:
+    description: Some example VPC
+    location: ru-1
+    name: Example VPC
+    subnetV4: 192.168.0.0/24

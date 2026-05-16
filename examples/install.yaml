@@ -1,0 +1,6 @@
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-timeweb
+spec:
+  package: xpkg.crossplane.io/lebedevdsl/crossplane-upjet-provider-timeweb:v0.1.0

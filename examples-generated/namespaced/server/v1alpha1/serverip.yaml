@@ -1,0 +1,33 @@
+apiVersion: server.timeweb.m.crossplane.io/v1alpha1
+kind: ServerIP
+metadata:
+  annotations:
+    meta.upbound.io/example-id: server/v1alpha1/serverip
+  labels:
+    testing.upbound.io/example-name: example
+  name: example
+  namespace: crossplane-system
+spec:
+  forProvider:
+    ptr: example.com
+    sourceServerIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: example-server
+    type: ipv4
+
+---
+
+apiVersion: server.timeweb.m.crossplane.io/v1alpha1
+kind: Server
+metadata:
+  annotations:
+    meta.upbound.io/example-id: server/v1alpha1/serverip
+  labels:
+    testing.upbound.io/example-name: example-server
+  name: example-server
+  namespace: crossplane-system
+spec:
+  forProvider:
+    name: Example server with preset
+    osId: ${data.twc_os.example-os.id}
+    presetId: ${data.twc_presets.example-preset.id}

@@ -1,0 +1,17 @@
+apiVersion: k8s.timeweb.crossplane.io/v1alpha1
+kind: Cluster
+metadata:
+  annotations:
+    meta.upbound.io/example-id: k8s/v1alpha1/cluster
+  labels:
+    testing.upbound.io/example-name: example-k8s-cluster
+  name: example-k8s-cluster
+spec:
+  forProvider:
+    description: some example cluster
+    highAvailability: false
+    ingress: true
+    name: example-cluster
+    networkDriver: flannel
+    presetId: ${data.twc_k8s_preset.example-k8s-preset-master.id}
+    version: v1.22.17
